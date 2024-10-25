@@ -1,0 +1,181 @@
+@using PuanConnect.Dtos.Event
+@using System.ComponentModel
+@model EventFormDto
+
+@{
+    ViewData["Title"] = "Create Event";
+
+    Model.Thumbnail = null;
+    var curTime = DateTime.Now;
+    var minCloseDate = object.Equals(Model.CloseDate, default(DateTime)) ? curTime.AddDays(1) : Model.CloseDate;
+    var minEventDate = object.Equals(Model.EventDate, default(DateTime)) ? minCloseDate.AddDays(2) : Model.EventDate;
+    var cancleRedirectUrl = ViewBag.RedirectCtrl == "Home" ? Url.Action("Index", "Home") : Url.Action("Index", "Event", new
+    {
+        id = Model.Id
+    });
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/topbar.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Event/Form/form.style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Event/Form/form-medium.style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Event/Form/form-small.style.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/js/Event/preview-upload-img.js"></script>
+    <script src="~/js/Event/mapHandle.js"></script>
+    <script src="~/js/Event/dataValidation.js"></script>
+    <script 
+        async
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCYKLu3S4yvtYSmnU3dl9BNkoffLgoaHXo&loading=async&callback=initMap&libraries=places&v=weekly">
+        </script>
+}
+
+<div class="top-bar">
+    <i id="hamburger-btn" class="fa-solid fa-bars" onClick="toggleFullNav()"></i>
+    @if (ViewBag.Action == "Create")
+    {
+        <h2>Create Event</h2>
+    }
+    else
+    {
+        <div class="next-btn-container">
+            <button type="button" class="next-page-btn" onclick="location.href='@cancleRedirectUrl'">
+                <i class="fa-solid fa-arrow-left"></i>
+                <div>Event</div>
+            </button>
+        </div>
+
+        <h2>Edit Event</h2>
+
+        <div class="next-btn-container">
+            <button type="button" class="next-page-btn"
+                onclick="location.href='@Url.Action("Index", "Approval", new { id = @Model.Id })'">
+                <div>Approval</div><i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    }
+</div>
+
+<section class="container">
+    <div class="create-event-container">
+        <form method="post" enctype="multipart/form-data" asp-action="@ViewBag.Action" asp-controller="Event"
+            onkeydown="return event.key != 'Enter';">
+            <div asp-validation-summary="ModelOnly"></div>
+
+            <fieldset class="event-main-info">
+                <input asp-for="Id" value=@Model.Id style="display: none;">
+                <div class="event-title-input event-input">
+                    <label asp-for="Title"></label>
+                    <input asp-for="Title" autocomplete="off" placeholder="e.g. Join us on PaunConnect">
+                    <span asp-validation-for="Title">
+                    </span>
+                </div>
+                <div class="event-input" id="category-input">
+                    <label asp-for="CategoryId"></label>
+                    <select asp-for="CategoryId">
+                        <option disabled selected="selected">Choose some category</option>
+                        @foreach (var category in Model.CategoriesList)
+                        {
+                            if (category.Id.ToString() == Model.CategoryId)
+                            {
+                                <option value=@category.Id selected="selected">
+                                    @category.Name
+                                </option>
+                            }
+                            else
+                            {
+                                <option value=@category.Id>
+                                    @category.Name
+                                </option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="CategoryId"></span>
+                </div>
+            </fieldset>
+
+            <fieldset id="event-attribute-info" class="event-attribute-info">
+                <div class="event-input">
+                    <label asp-for="CloseDate"></label>
+                    <input asp-for="CloseDate" value=@minCloseDate.ToLocalTime().ToString("yyyy-MM-ddTHH:mm")
+                        min="@minCloseDate.ToLocalTime().ToString("yyyy-MM-ddThh:mm")" id="close-date">
+                    <span class="date-validation" asp-validation-for="CloseDate"></span>
+                </div>
+
+                <div class="event-input">
+                    <label asp-for="EventDate"></label>
+                    <input asp-for="EventDate" value=@minEventDate.ToLocalTime().ToString("yyyy-MM-ddTHH:mm")
+                        min="@minEventDate.ToLocalTime().ToString("yyyy-MM-ddThh:mm")" id="event-date">
+                    <span asp-validation-for="EventDate"></span>
+                </div>
+
+                <div class="event-input RP-input">
+                    <label asp-for="MinReputation"></label>
+                    <input id="min-rep" asp-for="MinReputation" min=0 max=100>
+                    <span id="min-rep-validation" asp-validation-for="MinReputation"></span>
+                </div>
+
+                <div class="event-input max-Parti">
+                    <label asp-for="MaxParticipants"></label>
+                    <input id="max-parti" asp-for="MaxParticipants" min=1 max=99>
+                    <span id="max-parti-validation" asp-validation-for="MaxParticipants"></span>
+                </div>
+
+                <div class="event-input" id="tags-input">
+                    <label asp-for="Tags"></label>
+                    <input asp-for="Tags" placeholder="Example: Rizz, Chill, bong">
+                    <span asp-validation-for="Tags"></span>
+                </div>
+            </fieldset>
+
+            <fieldset class="event-about-info">
+                <div class="event-input event-about-input">
+                    <label asp-for="Description"></label>
+                    <textarea asp-for="Description" placeholder="Let's us know about you event"></textarea>
+                    <span asp-validation-for="Description"></span>
+                </div>
+            </fieldset>
+
+            <fieldset class="event-thumbnail-info">
+                <div class="event-input event-thumbnail-input">
+                    <label asp-for="Thumbnail"></label>
+                    <div class="preview-img-container">
+                        <div class="upload-file-btn">
+                            <i class="fa-solid fa-cloud-arrow-up fa-2xl" style="color: #ffc300;"></i>
+                            <b>Upload</b>
+                            <input type="file" asp-for="Thumbnail" accept="image/*">
+                        </div>
+                    </div>
+                    <span asp-validation-for="Thumbnail"></span>
+                </div>
+                <input class="thumbnail-placeholder" value="@ViewBag.Thumbnail" style="display: none;">
+            </fieldset>
+
+            <fieldset class="event-location-info">
+                <label asp-for="LocationName"></label>
+                <div class="location-name-container">
+                    <input asp-for="LocationName" id="location-input">
+                    <button type="button" id="location-clear-btn">Clear</button>
+                </div>
+                <span asp-validation-for="LocationName"></span>
+
+                <label for="google-map">Pin Location</label>
+                <div for="google-map" id="google-map"></div>
+
+                <input asp-for="LocationLat" id="location-lat">
+                <input asp-for="LocationLng" id="location-lng">
+            </fieldset>
+
+            <div class="form-btn-container">
+                <button type="sumit" id="submit-btn">
+                    @ViewBag.submitText
+                </button>
+                <button type="button" id="cancle-btn" onclick="location.href='@cancleRedirectUrl'">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</section>

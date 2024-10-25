@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@ViewData["Title"] - PuanConnect</title>
+  <link rel="stylesheet" href="~/css/auth/authentication.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/css/global.css" asp-append-version="true" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    asp-append-version="true" />
+  @RenderSection("Styles", required: false)
+</head>
+
+<body>
+  <div class="container">
+    <div class="img-section">
+      <img
+        src="https://images.pexels.com/photos/7149181/pexels-photo-7149181.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+        alt="" class="img">
+    </div>
+    <div class="form-section">
+      <h1 class="logo">PUAN<span>CONNECT</span></h1>
+      @RenderBody()
+    </div>
+  </div>
+  @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

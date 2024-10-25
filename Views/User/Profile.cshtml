@@ -1,0 +1,183 @@
+@{
+    ViewData["Title"] = "Profile";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/User/Profile/profile.style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/User/Profile/profile-medium.style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/User/Profile/profile-small.style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/topbar.css" asp-append-version="true" />
+}
+
+@using PuanConnect.Dtos.User
+@model UserProfileDto
+
+<div class="top-bar">
+    <i id="hamburger-btn" class="fa-solid fa-bars" onClick="toggleFullNav()"></i>
+    <h2>Profile</h2>
+</div>
+
+<section class="container">
+    <div class="profile-container">
+        <div class="profile-upper">
+            <div class="user-thumbnail" style="background-image: url('https://cdn.discordapp.com/attachments/1201438198425980998/1213872327872348181/Puan-connect-bg.png?ex=66004833&is=65edd333&hm=5914ed7c1bed5d19cab4eacf9c21d4b88abdcc2f1522cfdfbb3e60ebd8c8726e&');">
+                @* <img
+                class="user-thumbnail-img"
+                src="https://cdn.discordapp.com/attachments/1201438198425980998/1213872327872348181/Puan-connect-bg.png?ex=65f70db3&is=65e498b3&hm=4f2f8d9c32553e83d009244e2ef71066d81d57924759be06c5539e56a6c8f311&"
+                alt="user-thumbnail">
+                </img> *@
+            </div>
+            <span class="user-avatar">
+                <img src="@Model.Avatar" alt="user-avatar" id="user-avatar"></img>
+            </span>
+            <div class="edit-btn-container">
+                @if(ViewBag.IsOwner) {
+                    <button class="edit-btn" type="button" onclick="location.href='@Url.Action("Edit", "User")'">
+                        Edit Profile
+                    </button>
+                }
+                else {
+                    <button class="edit-btn" type="button" style="opacity: 0; cursor: default !important;">
+                        Placeholder
+                    </button>
+                }
+            </div>
+        </div>
+        <article class="profile-lower">
+            <div class="user-info">
+                <div class="user-id">
+                    <h1>@Model.Firstname @Model.Lastname</h1>
+                    <p>&commat;@Model.UserName</p>
+                </div>
+                <ul class="user-detail tag-list">
+                    <li class="tag">
+                        <i class="fa-regular fa-calendar"></i>
+                        <span class="detail">@Model.CreatedAt.ToLocalTime().ToString("MM/dd/yyyy")</span>
+                    </li>
+                    <li class="tag">
+                        <i class="fa-solid fa-cake-candles"></i>
+                        <span class="detail">@Model.BirthDate.ToLocalTime().ToString("MM/dd/yyyy")</span>
+                    </li>
+                    @* <li class="tag">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span class="detail">อยู่กรุงเทพ</span>
+                    </li> *@
+                    <li class="tag">
+                        <i class="fa-solid fa-globe"></i>
+                        <span class="detail">ประเทศไทย</span>
+                    </li>
+                    @* <li class="tag">
+                    <i class="fa-brands fa-github"></i>
+                    <span class="detail">git hub หล่ะ</span>
+                    </li> *@
+                </ul>
+                <div class="user-bio">
+                    @if (Model.Bio is not null)
+                    {
+                        @Model.Bio
+                    }
+                    else
+                    {
+                        <h2>You don't have bio</h2>
+                    }
+                </div>
+            </div>
+            <div class="user-activities">
+                <div class="attribute-container">
+                    <div class="user-attribute">
+                        <b>@String.Format(@Model.ReputationPoint % 1 == 0 ? "{0:0}" : "{0:0.00}", @Model.ReputationPoint)</b><br>
+                        <i class="fa-solid fa-medal"></i>
+                        Reputations
+                    </div>
+                    <div class="user-attribute">
+                        <b>@Model.Attendances.Count</b><br>
+                        <i class="fa-solid fa-user-group"></i>
+                        Attendances
+                    </div>
+                    <div class="user-attribute">
+                        <b>@Model.HeldEvents.Count</b><br>
+                        <i class="fa-solid fa-calendar-check"></i>
+                        Held Events
+                    </div>
+                </div>
+                <div class="latest-activities">
+                    <b>Latest Activity</b>
+                    <ul class="activities-list">
+                        @if (Model.Attendances is null)
+                        {
+                            <h2>
+                                Have no activity
+                            </h2>
+                        }
+                        else
+                        {
+                            @foreach (var e in Model.Attendances.OrderByDescending(order => order.UpdatedAt).ToList())
+                            {
+                                <li class="activity">
+                                  <a href="@Url.Action("Index", "Event", new{ Id = @e.Event.Id })">
+                                    <span><b>@TimeAgo(e.UpdatedAt.ToLocalTime()):</b> @e.Event.Title</span>
+                                    </a>
+                                    <b class="activity-status">
+                                        @if (Model.HeldEvents.Any(held => held.Id == e.EventId))
+                                        {
+                                            @String.Format("Author")
+                                        }
+                                        else
+                                        {
+                                            @String.Format("Attend")
+                                        }
+                                    </b>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+
+            </div>
+        </article>
+    </div>
+</section>
+
+@functions {
+    public string TimeAgo(DateTime dateTime)
+    {
+        string result = string.Empty;
+        var timeSpan = DateTime.Now.Subtract(dateTime);
+
+        if (timeSpan <= TimeSpan.FromSeconds(60))
+        {
+            result = string.Format("{0} seconds ago", timeSpan.Seconds);
+        }
+        else if (timeSpan <= TimeSpan.FromMinutes(60))
+        {
+            result = timeSpan.Minutes > 1 ?
+            String.Format("about {0} minutes ago", timeSpan.Minutes) :
+            "about a minute ago";
+        }
+        else if (timeSpan <= TimeSpan.FromHours(24))
+        {
+            result = timeSpan.Hours > 1 ?
+            String.Format("about {0} hours ago", timeSpan.Hours) :
+            "about an hour ago";
+        }
+        else if (timeSpan <= TimeSpan.FromDays(30))
+        {
+            result = timeSpan.Days > 1 ?
+            String.Format("about {0} days ago", timeSpan.Days) :
+            "yesterday";
+        }
+        else if (timeSpan <= TimeSpan.FromDays(365))
+        {
+            result = timeSpan.Days > 30 ?
+            String.Format("about {0} months ago", timeSpan.Days / 30) :
+            "about a month ago";
+        }
+        else
+        {
+            result = timeSpan.Days > 365 ?
+            String.Format("about {0} years ago", timeSpan.Days / 365) :
+            "about a year ago";
+        }
+
+        return result;
+    }
+}

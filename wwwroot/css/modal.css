@@ -1,0 +1,42 @@
+.modal {
+  max-width: 50ch;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 2rem;
+  border: 1px solid black;
+  border-radius: 8px;
+  margin: 0;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-close-button {
+  all: unset;
+  text-align: right;
+  font-size: 1.4rem;
+  background-color: transparent;
+  border: none;
+}
+
+.modal a {
+  text-decoration: none;
+  color: red;
+  transition: font-size 0.2s;
+  border: 1px solid red;
+  padding-inline: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.modal a:hover {
+  font-size: 1.1rem;
+}
+
+.modal::backdrop {
+  background: rgb(0 0 0 / 0.4);
+}

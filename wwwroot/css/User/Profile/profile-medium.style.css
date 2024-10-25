@@ -1,0 +1,31 @@
+@media(max-width: 768px) {
+    .profile-container {
+        height: 100%;
+    }
+    
+    .profile-lower {
+        display: grid;
+        grid-template-columns: 1fr;
+        width: 100%;
+        padding: 12px;
+    }
+    
+    .profile-lower .user-info {
+        border: 0;
+        padding: 8px;
+    }
+    
+    .profile-lower .user-activities {
+        border: 0;
+        padding: 8px;
+    }
+    
+    .latest-activities .activities-list {
+        & .activity {
+                
+            & span {
+                max-width: 30vw;
+            }
+        }
+    }
+}

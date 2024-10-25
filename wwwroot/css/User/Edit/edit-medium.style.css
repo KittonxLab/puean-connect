@@ -1,0 +1,16 @@
+@media(max-width: 768px) {
+    .user-fullname .profile-input {
+        width: 100%;
+    }
+    
+    .profile-input {
+        width: 100%;
+    }
+    
+    .profile-edit-form-contianer .user-creadential {
+        & #birth-input {
+            width: 8.5rem;
+        }
+    }
+
+}

@@ -1,0 +1,107 @@
+@using PuanConnect.Dtos.Event
+@model EventDto
+
+@{
+  ViewData["Title"] = "Approval";
+  ViewData["category"] = "Approval";
+  ViewData["eventId"] = @Model.Id;
+  Layout = "_InnerEventLayout";
+}
+
+@section Styles {
+  <link rel="stylesheet" href="~/css/event_status.css">
+  <link rel="stylesheet" href="~/css/approval_row.css">
+  <link rel="stylesheet" href="~/css/approval.css">
+  <link rel="stylesheet" href="~/css/modal.css">
+}
+
+@section Scripts {
+  <script src="~/js/modal.js"></script>
+}
+
+@section Header {
+  <div class="sort-container">
+    <a class="all-request @(ViewBag.sortMethod == "all" ? "active" : "")" href="approval?id=@Model.Id&method=all">All
+      request (<span id="all-request-number">@(Model.CurrentParticipants - 1)</span>)</a>
+    <a class="pending @(ViewBag.sortMethod == "pending" ? "active" : "")"
+      href="approval?id=@Model.Id&method=pending">Pending (<span id="pending-number">@(Model.CurrentParticipants -
+      @Model.ApprovedParticipants)</span>)
+    </a>
+    <a class="approve @(ViewBag.sortMethod == "approved" ? "active" : "")"
+      href="approval?id=@Model.Id&method=approved">Approve (<span id="approve-number">@(Model.ApprovedParticipants -
+      1)</span>)
+    </a>
+  </div>
+}
+
+@section HeaderRow {
+  <div class="participant-col">Participant</div>
+  <div class="reputation-col">Reputation points</div>
+  <div class="date-col">Date applied</div>
+  <div class="status-col">Status</div>
+}
+
+@{
+  var attendees = Model.Attendees;
+}
+
+@for (int i = 0; i < attendees.Count(); ++i)
+{
+  <div class="result-container">
+    @{
+      int j;
+    }
+    @for (j = i; j < Math.Min(attendees.Count(), i + 10); ++j)
+    {
+      var sortMethod = ViewBag.sortMethod == "approved";
+      if (attendees[j].User.Id == ViewBag.userId || (attendees[j].isApproved != sortMethod && ViewBag.sortMethod != "all")
+      ||
+      attendees[j].Status ==
+      AttendeeStatus.Left)
+      {
+        i += 1;
+        continue;
+      }
+      var curUser = attendees[j].User;
+      var status = attendees[j].isApproved ? "Approved" : "Pending";
+      <div class="row">
+        <a class="participant-col" href="@Url.Action("People", "User", new { id = @curUser.Id })">@curUser.UserName</a>
+        <div class="reputation-col"><span class="rep-label">Rep points: </span>@curUser.ReputationPoint</div>
+        <div class="date-col">@attendees[j].UpdatedAt</div>
+        <div class="status-col status-@status.ToLower()">
+          <li> @status</li>
+          @if (attendees[j].isApproved)
+          {
+            <a class="next-page-btn disapprove"
+              link='@Url.Action("DisApprove", "Approval", new { eventId = @Model.Id, userId = @Model.Attendees[j].User.Id })'>
+              DisApprove
+            </a>
+          }
+          else
+          {
+            <a class="next-page-btn approve"
+              href='@Url.Action("Approve", "Approval", new { eventId = @Model.Id, userId = @Model.Attendees[j].User.Id })'>
+              Approve
+            </a>
+          }
+        </div>
+      </div>
+    }
+    @{
+      i = j;
+    }
+  </div>
+}
+
+@section Modal {
+  <dialog class="modal" id="modal">
+    <div class="modal-header">
+      <h3>คำเตือน</h3><button class="modal-close-button" id="modal-close-button"><i
+          class="fa-solid fa-xmark"></i></button>
+    </div>
+    <p>ถ้าคุณ DisApprove สมาชิกกลุ่มของคุณ คุณจะโดนหักคะแนนความประพฤติ ต้องการทำต่อหรือไม่</p>
+    <a id="disapprove-link" href="">
+      DisApprove
+    </a>
+  </dialog>
+}

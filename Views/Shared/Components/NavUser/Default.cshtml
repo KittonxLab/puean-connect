@@ -1,0 +1,37 @@
+@using PuanConnect.Dtos.User
+@model UserProfileDto
+
+@if (ViewBag.isAuthen)
+{
+    <div id="nav-logout" class="nav-user-logout">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        <button id="nav-logut-btn" onclick="location.href='@Url.Action("Logout", "Account")'">
+            Logout
+        </button>
+    </div>
+    <div id="nav-profile" class="nav-user-profile">
+        <div class="nav-user-img-container">
+            <a href='@Url.Action("Profile", "User")'>
+                <img src="@Model.Avatar" alt="avatar" />
+            </a>
+        </div>
+        <div class="nav-user-info">
+            <p>@Model.Firstname @Model.Lastname</p>
+            <p>#@Model.UserName</p>
+        </div>
+    </div>
+}
+else
+{
+    <div id="nav-logout" class="nav-user-logout" style="display: none;"></div>
+    <div id="nav-profile" class="nav-user-profile">
+        <div class="nav-account-action">
+            <button id="nav-login-btn" onclick="location.href='@Url.Action("Login", "Account")'">
+                Login
+            </button>
+            <button id="register-login-btn" onclick="location.href='@Url.Action("Register", "Account")'">
+                Register
+            </button>
+        </div>
+    </div>
+}

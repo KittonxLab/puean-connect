@@ -1,0 +1,39 @@
+.result-container .row {
+  display: flex;
+}
+
+.date-col {
+  width: 20%;
+}
+
+.title-col {
+  width: 70%;
+  padding-right: 10px;
+}
+
+.status-col{
+  display: flex;
+  padding-block: 2px;
+  justify-content: end;
+  width: 10%;
+}
+
+@media (max-width: 768px) {
+  .result-container .row {
+    flex-direction: column;
+    gap: 0.4em;
+  }
+
+  .status-col {
+    width: 100%;
+    justify-content: start;
+  }
+
+  .title-col {
+    width: 100%;
+  }
+
+  .header-row {
+    display: none;
+  }
+}

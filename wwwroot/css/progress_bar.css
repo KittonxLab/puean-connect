@@ -1,0 +1,24 @@
+progress::-webkit-progress-bar {
+  background-color: var(--light-grey);
+  border-radius: 100vmax;
+  width: 100%;
+}
+
+progress::-webkit-progress-value {
+  background-color: var(--primary-dark) !important;
+  border-radius: 100vmax;
+}
+
+progress::-moz-progress-bar {
+  background-color: var(--primary-dark) !important;
+  border-radius: 100vmax;
+}
+
+progress {
+  background-color: var(--light-grey);
+  color: var(--primary-dark);
+  border-radius: 100vmax;
+  height: 10px;
+  top: 0;
+  margin-block: auto;
+}

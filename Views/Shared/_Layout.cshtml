@@ -1,0 +1,92 @@
+﻿@{
+  String[] routes = { "home", "your events", "group", "history" };
+
+  String[] icons = { "house", "book", "user-group", "clock-rotate-left" };
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="~/puan-connect.ico" rel="shortcut icon" type="image/x-icon" />
+  <title>@ViewData["Title"] | PuanConnect</title>
+  <link rel="stylesheet" href="~/css/global.css" awatsp-append-version="true" />
+  <link rel="stylesheet" href="~/css/navbar.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/css/navbar-small.style.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/css/navbar-medium.style.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/PuanConnect.styles.css" asp-append-version="true" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    asp-append-version="true" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"
+    asp-append-version="true" />
+  @await RenderSectionAsync("Styles", required: false)
+</head>
+
+<body>
+  <div id="main-content" class="main-content">
+    <nav class="side-navbar">
+      <img src="~/images/navbar/Puan-connect-logo.png" alt="home" class="logo" onclick="navigateToInNav('/Home')">
+      <ul class="nav-list">
+        @for (var i = 0; i < 4; i++)
+
+        {
+          <li id="@routes[i]" class="nav-route" onclick="handleRouteClick('@routes[i]')">
+            <div class="nav-route-icon-container">
+              <i id="icon-@icons[i]" class="fa-solid fa-@icons[i]"></i>
+            </div>
+            <p>@(char.ToUpper(routes[i][0]) + routes[i].Substring(1))</p>
+          </li>
+        }
+      </ul>
+      <div class="nav-footer">
+        @await Component.InvokeAsync("NavUser")
+      </div>
+    </nav>
+
+    @* This appear when the screen get too small *@
+    <nav class="full-screen-nav">
+      <i id="hamburger" class="fa-solid fa-xmark" onClick="toggleFullNav()"></i>
+      <img src="~/images/navbar/Puan-connect-logo.png" alt="home" class="logo">
+      <ul class="nav-list">
+        @for (var i = 0; i < 4; i++)
+
+        {
+          <li id="@routes[i]-full" class="nav-route" onclick="handleRouteClick('@routes[i]')">
+            <div class="nav-route-icon-container">
+              <i id="icon-@icons[i]" class="fa-solid fa-@icons[i]"></i>
+            </div>
+            <p>@(char.ToUpper(routes[i][0]) + routes[i].Substring(1))</p>
+          </li>
+        }
+      </ul>
+      @await Component.InvokeAsync("NavUser")
+    </nav>
+
+    <main id="main" role="main">
+      @RenderBody()
+    </main>
+  </div>
+
+  @RenderSection("Modal", required: false)
+
+  @* <footer class="border-top footer text-muted">
+  <div class="container">
+  &copy; 2024 - PuanConnect - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+  </div>
+  </footer> *@
+  @await RenderSectionAsync("Scripts", required: false)
+  <script src="~/js/navbar.js"></script>
+
+  @if (TempData["Error"] != null)
+  {
+    <script type="text/javascript">
+      document.onreadystatechange = () => {
+        alert('@TempData["Error"]');
+      }
+    </script>
+  }
+</body>
+
+</html>

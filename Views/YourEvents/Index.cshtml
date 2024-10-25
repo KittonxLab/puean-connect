@@ -1,0 +1,53 @@
+@{
+  ViewData["Title"] = "YourEvents";
+  ViewData["category"] = "Your Events";
+  Layout = "_InnerEventLayout";
+}
+
+@using PuanConnect.Dtos.Event
+@model List<YourEventsDto>
+
+@section Styles {
+  <link rel="stylesheet" href="~/css/event_status.css">
+  <link rel="stylesheet" href="~/css/your_event_row.css">
+  <link rel="stylesheet" href="~/css/progress_bar.css">
+  <link rel="stylesheet" href="~/css/button.css">
+}
+
+@section HeaderRow {
+  <div class="date-col">Date</div>
+  <div class="title-col">Title</div>
+  <div class="status-col">Status</div>
+}
+
+@for (int i = 0; i < Model.Count(); ++i)
+{
+  <div class="result-container">
+    @{
+      int j;
+    }
+    @for (j = i; j < Math.Min(Model.Count(), i + 10); ++j)
+    {
+      <div class="row">
+        <div class="date-col">@Model[j].EventDate.ToLocalTime().ToString("dd MMMM, yyyy")</div>
+        <a class="title-col" href="event?id=@Model[j].Id">@Model[j].Title</a>
+        <div class="status-col">
+          <progress value="@(Model[j].ApprovedParticipants+2)" max="@(Model[j].MaxParticipants+2)">
+          </progress>
+          <div>@Model[j].ApprovedParticipants/@Model[j].MaxParticipants</div>
+          @if(Model[j].IsOpen){
+            <a href="yourevents/close?id=@Model[j].Id">Close</a>
+          }
+          else{
+            <button disabled>Closed</button>
+          }
+          <a class=@(Model[j].CurrentParticipants - Model[j].ApprovedParticipants > 0 ? "active-button" : "\"\"")
+            href="approval?id=@Model[j].Id">Approval</a>
+        </div>
+      </div>
+    }
+    @{
+      i = j;
+    }
+  </div>
+}

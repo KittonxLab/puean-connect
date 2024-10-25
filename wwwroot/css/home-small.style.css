@@ -1,0 +1,16 @@
+@media (max-width: 425px) {
+    .left-top-bar i {
+        display: block;
+    }
+
+    .sort-dropdown {
+        margin-left: 0;
+        padding: 0.25rem;
+    }
+
+    .event-search-bar {
+        width: auto;
+        padding: 0.25rem;
+    }
+    
+}

@@ -1,0 +1,30 @@
+@media(max-width: 425px) {
+    .container {
+        padding: 0;
+    }
+
+    .top-bar {
+        padding-inline: 8px;
+    }
+
+    .event-attribute-info {
+
+        & #tag-input,
+        #category-input {
+            width: 100%;
+        }
+    }
+    
+    .next-btn-container {
+        order: 3;
+    }
+
+    .next-btn-container .next-page-btn {
+        width: 1rem;
+    }
+
+    .next-page-btn>div {
+        display: none;
+    }
+
+}

@@ -1,0 +1,170 @@
+﻿@using PuanConnect.Dtos.Event
+@model List<EventDto>
+
+@{
+  ViewData["Title"] = "Home Page";
+  String[] categories = { "All", "Hang out", "Meeting", "Sports", "Travel", "Dining", "Tutoring", "Gaming" };
+  String[] routes = { "home", "post", "group", "stars", "history" };
+  String[] icons = { "house", "book", "user-group", "star", "clock-rotate-left" };
+}
+
+@section Styles {
+  <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/css/home-medium.style.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/css/home-small.style.css" asp-append-version="true" />
+}
+
+@section Scripts {
+  <script src="~/js/home.js"></script>
+}
+
+<div class="top-bar">
+  <div class="left-top-bar">
+    <i class="fa-solid fa-bars" onClick="toggleFullNav()"></i>
+    <ul class="category-list">
+      @foreach (var category in categories)
+      {
+        <li id="@category" onclick="setSelectedCategory('@category')">@category</li>
+      }
+    </ul>
+  </div>
+  <div class="event-creating-button-container">
+    <button type="button" onclick="location.href='@Url.Action("Create", "Event")'">
+      <i class="fa-solid fa-plus"></i>
+      <span>Create Event</span>
+    </button>
+  </div>
+</div>
+
+<div class="event-search">
+  @* the arrow in this select is too close *@
+  <select class="sort-dropdown" id="sort-dropdown" onchange="setSortEvents()">
+    <option value="upcoming">Upcoming</option>
+    <option value="almost full">Almost Full</option>
+  </select>
+  <div class="event-search-bar">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" id="event-search-input" placeholder="Search" onchange="searchEvents()" />
+  </div>
+</div>
+
+<div id="event-content" class="event-content">
+  <div id="event-grid" class="event-grid">
+    @foreach (var eventItem in Model)
+    {
+      <div class="event-card" onclick="navigateTo('Event?id=@eventItem.Id')">
+        <div class="event-detail">
+          @* this id is hidden in UI but is needed for searching *@
+          <p class="event-id">@eventItem.Id</p>
+          @* <p class="event-id-debug">@eventItem.Id</p> *@
+          <p class="event-category">@eventItem.Category.Name</p>
+          @* this is for debugging purposes *@
+          @* <p class="event-category-debug">@eventItem.Category.Name</p> *@
+
+          <p class="event-title">@eventItem.Title</p>
+          <div class="event-info">
+            <div class="owner-date-time">
+              <div class="owner-info">
+                <i class="fa-regular fa-user"></i>
+                <p>@eventItem.Owner.UserName</p>
+              </div>
+              @* this id is hidden in UI but is needed for sorting *@
+              <p class="event-time">@eventItem.EventDate</p>
+              <div class="date-info">
+                <i class="fa-regular fa-calendar"></i>
+                <p>@eventItem.EventDate.ToLocalTime().ToString("dd MMMM, yyyy")</p>
+              </div>
+              <div class="time-info">
+                <i class="fa-regular fa-clock"></i>
+                <p>@eventItem.EventDate.ToLocalTime().ToString("hh:mm tt")</p>
+              </div>
+            </div>
+            <div class="location-container">
+              <div class="icon-with-text">
+                @if (@eventItem.LocationName is not null)
+
+                {
+                  <svg xmlns="http://www.w3.org/2000/svg" class="location-icon" width="1.5em" height="1.5em"
+                    viewBox="0 0 32 32">
+                    <path fill="currentColor"
+                      d="M16 18a5 5 0 1 1 5-5a5.006 5.006 0 0 1-5 5m0-8a3 3 0 1 0 3 3a3.003 3.003 0 0 0-3-3" />
+                    <path fill="currentColor"
+                      d="m16 30l-8.436-9.949a35.076 35.076 0 0 1-.348-.451A10.889 10.889 0 0 1 5 13a11 11 0 0 1 22 0a10.884 10.884 0 0 1-2.215 6.597l-.001.003s-.3.394-.345.447ZM8.813 18.395s.233.308.286.374L16 26.908l6.91-8.15c.044-.055.278-.365.279-.366A8.901 8.901 0 0 0 25 13a9 9 0 1 0-18 0a8.905 8.905 0 0 0 1.813 5.395" />
+                  </svg>
+                  <p class="location-name">@eventItem.LocationName</p>
+                  @* @if (@eventItem.LocationName.Length > 80)
+              {
+              <p>@string.Concat(@eventItem.LocationName.Substring(0, 79), "...")</p>
+              }
+              else
+              {
+              <p>@eventItem.LocationName</p>
+              } *@
+                }
+              </div>
+            </div>
+            <div class="event-tags">
+              @if (eventItem.Tags is not null)
+              {
+                @foreach (var tag in eventItem.Tags)
+                {
+                  <p>@tag</p>
+                }
+              }
+            </div>
+            <div class="event-interaction">
+              @* this id is hidden in UI but is needed for sorting *@
+              <p class="event-approved-participants">@eventItem.ApprovedParticipants</p>
+              @* this id is hidden in UI but is needed for sorting *@
+              <p class="event-max-participants">@eventItem.MaxParticipants</p>
+              <div class="icon-with-text">
+                <svg xmlns="http://www.w3.org/2000/svg" class="people-icon" width="1em" height="1em" viewBox="0 0 24 24">
+                  <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5">
+                    <path d="M1 20v-1a7 7 0 0 1 7-7v0a7 7 0 0 1 7 7v1" />
+                    <path d="M13 14v0a5 5 0 0 1 5-5v0a5 5 0 0 1 5 5v.5" />
+                    <path stroke-linejoin="round"
+                      d="M8 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8m10-3a3 3 0 1 0 0-6a3 3 0 0 0 0 6" />
+                  </g>
+                </svg>
+                <p>@eventItem.ApprovedParticipants / @eventItem.MaxParticipants</p>
+              </div>
+              <div class="event-interaction-buttons">
+                @* <button class="event-button" onclick="event.stopPropagation()">
+              <i class="fa-solid fa-star"></i>
+              <span>Star</span>
+              </button> *@
+                <button class="event-button" onclick="handleShare(event, '@eventItem.Id')">
+                  <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                  <span>Share</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="event-img-container">
+          <img src="@eventItem.Thumbnail" alt="event" class="event-image" />
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<div class="bottom-container">
+  <p id="event-result-number">Showing 0 of 0 results found</p>
+  <div class="pagination-nav">
+    <i id="event-arrow-left" class="fa-solid fa-angle-left" onclick="turnToPreviousPage()"></i>
+    <div id="event-page-numbers" class="event-page-numbers">
+      @* <p id="event-page-number">1</p>
+      <p id="event-page-number">2</p>
+      <p id="event-page-number">3</p>
+      <p id="event-page-number">4</p>
+      <p id="event-page-number">5</p> *@
+    </div>
+    <i id="event-arrow-right" class="fa-solid fa-angle-right" onclick="turnToNextPage()"></i>
+  </div>
+</div>
+
+<script>
+  const events = @Json.Serialize(Model);
+  console.log(events);
+</script>

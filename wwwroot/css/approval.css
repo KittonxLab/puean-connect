@@ -1,0 +1,48 @@
+.sort-button {
+  right: 0;
+  margin-left: auto;
+}
+
+.sort-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px 10px 5px 10px;
+  border: 1px solid var(--light-grey);
+  border-bottom: none;
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+}
+
+.sort-container a {
+  text-decoration: none;
+}
+
+.sort-container > *:nth-child(-n + 3) {
+  color: var(--light-grey);
+}
+
+.sort-container > *.active {
+  border-bottom: solid 3px var(--primary-dark);
+  color: black;
+}
+
+.sort-container > * {
+  cursor: pointer;
+}
+
+.row * {
+  margin-block: auto;
+}
+
+.row a {
+  cursor: pointer;
+  text-decoration: none;
+  color: black;
+  transition: font-size 0.2s;
+}
+
+.row a:hover {
+  font-size: 1.1rem;
+}

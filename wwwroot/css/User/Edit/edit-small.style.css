@@ -1,0 +1,24 @@
+@media(max-width: 425px) {
+    .container {
+        padding: 0;
+    }
+
+    .profile-upper .user-avatar {
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .user-password .profile-input {
+        width: 100%;
+    }
+
+    .profile-edit-form-contianer .user-creadential {
+
+        & #birth-input,
+        #phone-input {
+            width: 100%;
+        }
+    }
+
+}

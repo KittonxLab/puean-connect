@@ -1,0 +1,42 @@
+@model List<PuanConnect.Controllers.GroupsController.GroupData>
+
+@{
+  ViewData["Title"] = "Group";
+  ViewData["category"] = "Group";
+  Layout = "_InnerEventLayout";
+}
+
+@section Styles {
+  <link rel="stylesheet" href="~/css/event_status.css">
+  <link rel="stylesheet" href="~/css/event_row.css">
+}
+
+@section HeaderRow {
+  <div class="date-col">Date</div>
+  <div class="title-col">Title</div>
+  <div class="status-col">Status</div>
+}
+
+@for (int i = 0; i < Model.Count(); ++i)
+{
+  <div class="result-container">
+    @{
+      int j;
+    }
+    @for (j = i; j < Math.Min(Model.Count(), i + 10); ++j)
+    {
+      string status = Model[j].status;
+      <div class="row">
+        <div class="date-col">@Model[j].groupsDto.EventDate.ToLocalTime().ToString("dd MMMM, yyyy")</div>
+        <a class="title-col" href="event?id=@Model[j].groupsDto.Id">@Model[j].groupsDto.Title</a>
+        <div class="status-col status-@status.ToLower()">
+          <li> @status</li>
+          <a href="event?id=@Model[j].groupsDto.Id">View</a>
+        </div>
+      </div>
+    }
+    @{
+      i = j;
+    }
+  </div>
+}

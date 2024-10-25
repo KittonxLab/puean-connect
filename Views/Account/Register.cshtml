@@ -1,0 +1,113 @@
+@using PuanConnect.Dtos.Auth
+@model RegisterDto
+
+@{
+  ViewData["Title"] = "Register";
+  Layout = "_Authentication";
+}
+
+@section Styles {
+  <link rel="stylesheet" href="~/css/auth/register/register.css">
+}
+
+@section Scripts {
+  <script src="~/js/auth/register/profile_image.js"></script>
+  <script src="~/js/auth/register/register_form_animate.js"></script>
+}
+
+<h2>Register</h2>
+
+@if (TempData["error"] != null)
+{
+  <div class="error-text">
+    @TempData["error"]
+  </div>
+}
+
+<h2 class="profile-form">Create Profile</h2>
+
+<form asp-action="Register" id="form" class="form-container" enctype="multipart/form-data">
+  <div asp-validation-summary="ModelOnly"></div>
+
+  <div class="form-container" id="credentials-form">
+    <div>
+      <label asp-for="UserName">Username</label>
+      <input asp-for="UserName" type="text" id="username" minlength="4" pattern="[^\s@@]+"
+        title="Whitespace and '@@' are not allowed" required>
+      <span asp-validation-for="UserName" class="error-text"></span>
+    </div>
+
+    <div>
+      <label asp-for="Email">Email</label>
+      <input asp-for="Email" type="email" id="email" required>
+      <span asp-validation-for="Email" class="error-text"></span>
+    </div>
+
+    <div>
+      <label asp-for="Password">Password</label>
+      <input asp-for="Password" type="password" id="password"
+        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%*?&])[A-Za-z\d@@$!%*?&]{8,}$"
+        title="Must contain at least one number, one uppercase and lowercase letter and one special character, and at least 8 or more characters"
+        required>
+      <span asp-validation-for="Password" class="error-text"></span>
+
+    </div>
+
+    <div>
+      <label for="retype-password">Re-type Password</label>
+      <input type="password" id="retype-password" required>
+    </div>
+
+    <button type="submit" onclick="return false" class="form-control-button next-button" id="next-button">
+      <i class='fas fa-angle-right'></i>
+    </button>
+  </div>
+
+  <div class="form-container profile-form" id="profile-form">
+    <button class="form-control-button prev-button" type="button" id="prev-button">
+      <i class='fas fa-angle-left'></i>
+    </button>
+
+    <div class="profile-image-wrapper" id="profile-image-wrapper">
+      <img class="profile-image" id="profile-image" src="~/images/default_profile_picture.jpg" />
+      <div class="profile-image-icon">
+        <i class="fa-regular fa-pen-to-square"></i>
+      </div>
+    </div>
+    <input asp-for="Image" id="image-upload" class="image-upload" type="file" capture>
+
+    <div>
+      <label asp-for="Firstname">Firstname</label>
+      <input asp-for="Firstname" type="text" id="firstname" required>
+      <span asp-validation-for="Firstname" class="error-text"></span>
+    </div>
+
+    <div>
+      <label asp-for="Lastname">Lastname</label>
+      <input asp-for="Lastname" type="text" id="lastname" required>
+      <span asp-validation-for="Lastname" class="error-text"></span>
+    </div>
+
+    <div>
+      <label asp-for="PhoneNumber">Phone</label>
+      <input asp-for="PhoneNumber" type="text" id="phone" pattern="^(0[689]{1})+([0-9]{8})+$"
+        title="only Thai phone number with no '-' or whitespace are allowed" required>
+      <span asp-validation-for="PhoneNumber" class="error-text"></span>
+    </div>
+
+    <div>
+      <label asp-for="BirthDate">Date of Birth</label>
+      <input asp-for="BirthDate" type="date" id="birthdate" min="1800-01-01" value="1970-01-01"
+        max='@DateTime.Now.ToLocalTime().ToString("yyyy-MM-dd")' required>
+      <span asp-validation-for="BirthDate" class="error-text"></span>
+    </div>
+
+    <button type="submit" class="submit-button">
+      Register
+    </button>
+
+    <div class="switch-form">
+      <a href="/auth/login">Already have an account? Login</a>
+    </div>
+  </div>
+</form>

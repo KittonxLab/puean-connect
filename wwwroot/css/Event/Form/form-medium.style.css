@@ -1,0 +1,17 @@
+@media(max-width: 768px){
+    .event-main-info .event-title-input {
+        width: 100%;
+        height: auto;
+    }
+    
+    .event-location-info #location-input {
+        width: 90%;
+    }
+    
+    .next-btn-container {
+        
+        & .next-page-btn {
+            width: 4rem;
+        }
+    }
+}

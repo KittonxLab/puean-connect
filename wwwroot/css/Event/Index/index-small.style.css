@@ -1,0 +1,15 @@
+@media(max-width: 425px) {
+    .container {
+        
+        padding: 0;
+    }
+    
+    .event-container {
+        gap: 0;
+    }
+    
+    .event-map-applicant {
+        border-top: 4px dashed var(--dark-grey);
+    }
+
+}

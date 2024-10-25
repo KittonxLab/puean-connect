@@ -1,0 +1,59 @@
+.result-container .row {
+  display: flex;
+}
+
+.row * {
+  margin-block: auto;
+}
+
+.date-col {
+  width: 25%;
+  padding-right: 10px;
+}
+
+.title-col {
+  padding-right: 10px;
+}
+
+.status-col {
+  display: flex;
+  gap: 10px;
+  width: 50%;
+}
+
+@media (max-width: 1023px) {
+  .result-container .row {
+    flex-direction: column;
+    gap: 0.4em;
+  }
+
+  .date-col {
+    width: 100%;
+  }
+
+  .status-col {
+    width: 100%;
+  }
+
+  .title-col {
+    width: 100%;
+  }
+
+  .header-row {
+    display: none;
+  }
+}
+
+.status-col > :last-child {
+  margin-left: 0;
+}
+
+.row a {
+  text-decoration: none;
+  color: black;
+  transition: font-size 0.2s;
+}
+
+.row a:hover {
+  font-size: 1.1rem;
+}

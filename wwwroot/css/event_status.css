@@ -1,0 +1,47 @@
+:root {
+  --green: #00c608;
+  --orange: #ff7a00;
+}
+
+.status-col li {
+  list-style-type: "•";
+  border-radius: 7px;
+  padding: 1px 15px 1px 8px;
+}
+
+.status-approved li {
+  border: 1px solid var(--green);
+  color: var(--green);
+}
+
+.status-left li{
+  border: 1px solid grey;
+  color: grey;
+}
+
+.status-pending li {
+  border: 1px solid var(--orange);
+  color: var(--orange);
+}
+
+.status-author li {
+  border: 1px solid var(--black);
+  color: var(--black);
+}
+
+.status-col a, button {
+  border-radius: 7px;
+  margin-right: 8px;
+  margin-left: auto;
+  font-size: 0.8rem;
+  border: 1px solid var(--black);
+  padding: 3px 10px 1px 10px;
+  text-decoration: none;
+  color: var(--black);
+}
+
+.status-col button:disabled,
+.status-col button[disabled]{
+  color: var(--dark-grey);
+  border: 1px solid var(--dark-grey);
+}

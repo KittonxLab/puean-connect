@@ -1,0 +1,11 @@
+@media(max-width: 425px) {
+    .container {
+        padding: 0;
+    }
+    
+    .profile-upper .user-avatar {
+        height:  100px;
+        width: 100px;
+        left: 1rem;
+    }
+}

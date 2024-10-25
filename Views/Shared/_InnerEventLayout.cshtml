@@ -1,0 +1,60 @@
+@{
+  Layout = "_Layout";
+}
+
+@section Styles {
+  <link rel="stylesheet" href="~/css/inner_events_layout.css">
+    @RenderSection("Styles", required: false)
+}
+
+@section Scripts {
+  @RenderSection("Scripts", required: false)
+  <script src="~/js/inner_event_layout.js"></script>
+}
+
+<div class="top-bar">
+  @if (ViewData["Title"] == "Approval") {
+    <div class="next-btn-container">
+      <button type="button" class="next-page-btn" onclick="location.href='@Url.Action("Index", "Event", new { id = @ViewData["eventId"] } )'">
+          <i class="fa-solid fa-arrow-left"></i>
+          <div>Event</div>
+      </button>
+    </div>
+  }
+  <h2>@ViewData["category"]</h2>
+</div>
+
+<div class="big-container"></div>
+
+<div class="inner-event-container">
+  @RenderSection("Header", required: false)
+
+  <div class="event-container" id="event-container">
+    <div class="row header-row">
+      @RenderSection("HeaderRow", required: false)
+    </div>
+
+    <div class="results-container" id="results-container">
+      @RenderBody()
+    </div>
+
+    <div class="footer-row">
+      <div class="result-number" id="result-number"></div>
+      <div class="pagination">
+        <div class="arrow-left" id="arrow-left">
+          <i class="fa-solid fa-angle-left"></i>
+        </div>
+
+        <div class="page-numbers" id="page-numbers">
+          <div class="page-number active">1</div>
+        </div>
+
+        <div class="arrow-right" id="arrow-right">
+          <i class="fa-solid fa-angle-right"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@RenderSection("Modal", required: false)

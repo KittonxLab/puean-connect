@@ -1,0 +1,72 @@
+.result-container .row {
+  display: flex;
+}
+
+.participant-col {
+  width: 25%;
+  padding-right: 10px;
+}
+
+.reputation-col {
+  width: 20%;
+}
+
+.date-col {
+  width: 25%;
+}
+
+.status-col {
+  display: flex;
+  justify-content: space-between;
+  width: 30%;
+}
+
+.rep-label {
+  display: none;
+}
+
+.event-container {
+  border-top-right-radius: 0px;
+  border-top-left-radius: 0px;
+}
+
+@media (max-width: 1023px) {
+  .result-container .row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.4em;
+  }
+
+  .header-row {
+    display: none;
+  }
+
+  .rep-label {
+    display: inline;
+  }
+
+  .date-col {
+    width: 50%;
+  }
+
+  .reputation-col {
+    width: 40%;
+  }
+
+  .status-col {
+    width: 100%;
+  }
+
+  .participant-col {
+    width: 100%;
+  }
+}
+
+@media (max-width: 425px) {
+  .reputation-col {
+    width: 60%;
+  }
+  .date-col {
+    width: 100%;
+  }
+}

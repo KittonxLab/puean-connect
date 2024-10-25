@@ -1,0 +1,277 @@
+@using PuanConnect.Dtos.Event
+@using PuanConnect.Models
+@using System.Runtime
+@model EventViewModel
+
+@{
+    ViewData["Title"] = "Event";
+    var user = Model.User;
+    var Event = Model.Event;
+    bool isOwner = user is null || Event!.Owner.UserName == user.UserName;
+    bool isAttendee = user is null || Event!.Attendees.Any(a => a.User.UserName == user.UserName && a.Status !=
+    AttendeeStatus.Left);
+
+    var eventDate = Event!.EventDate;
+    var closeDate = Event!.CloseDate;
+    bool isClosed = !Event.IsOpen || DateTime.Compare(closeDate, DateTime.UtcNow) <= 0;
+
+    var googleMap = "https://maps.googleapis.com/maps/api/staticmap?center=" + @Event.LocationLat + "," + @Event.LocationLng
+    + "&zoom=15&size=400x400&markers=color:red%7Clabel:%7C" + @Event.LocationLat + "," + @Event.LocationLng +
+    "&key=AIzaSyCYKLu3S4yvtYSmnU3dl9BNkoffLgoaHXo";
+}
+
+@section Scripts {
+    <script src="~/js/Event/share-btn.js"></script>
+    <script src="~/js/modal.js"></script>
+    <script src="~/js/Event/addToCalendar.js"></script>
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Event/Index/index.style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Event/Index/index-medium.style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Event/Index/index-small.style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/topbar.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/modal.css" asp-append-version="true" />
+}
+
+<div class="top-bar">
+    <i id="hamburger-btn" class="fa-solid fa-bars" onClick="toggleFullNav()"></i>
+    <h3>Event info</h3>
+    <div class="event-creating-button-container">
+        <button type="button" onclick="location.href='@Url.Action("Create", "Event")'">
+            <i class="fa-solid fa-plus"></i>
+            <span class="create-event-span">Create Event</span>
+        </button>
+    </div>
+</div>
+
+<section class="container">
+    <div class="event-container">
+        <article class="event-main-card">
+            <div class="event-image">
+                <img class="event-thumbnail" src="@Event.Thumbnail" alt="event-thumbnail">
+                </img>
+            </div>
+            <div class="event-title">
+                <div class="title">
+                    <p>
+                        @Event.Title
+                    </p>
+                </div>
+                <div class="btn-container">
+                    <button class="share-btn" type="button">
+                        <i class="share-icon fa-solid fa-arrow-up-right-from-square"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="event-info">
+                <div class="owner-profile">
+                    @if (user is not null && Event.Owner.Id == user!.Id)
+                    {
+                        <a href="@Url.Action("Profile", "User")">
+                            <img class="owner-avatar" src="@Event.Owner.Avatar" alt="owner-avatar"></img>
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("People", "User", new { id = Event.Owner.Id })">
+                            <img class="owner-avatar" src="@Event.Owner.Avatar" alt="owner-avatar"></img>
+                        </a>
+                    }
+                    <div class="owner-name">@Event.Owner.UserName</div>
+                </div>
+                <div class="seat-container">
+                    <div class="current-seat">
+                        <i class="fa-solid fa-user-group"></i>
+                        <span>@Event.ApprovedParticipants/@Event.MaxParticipants</span>
+                    </div>
+                    <div class="applicant">@Event.CurrentParticipants applied</div>
+                </div>
+                @if (Event.Tags is not null && Event.Tags.Length > 0)
+                {
+                    <div class="tag-list">
+                        @foreach (var tag in Event.Tags)
+                        {
+                            <div class="tag">
+                                @tag
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+            <div class="event-date">
+                <div class="event-date-des">
+                    <p><b>Event</b></p>
+                    <p>Date</p>
+                </div>
+                <time class="date">
+                    <p><b>@eventDate.ToLocalTime().ToString("dd")</b></p>
+                    <p>@eventDate.ToLocalTime().ToString("MMM yy")</p>
+                </time>
+                <div class="verticle-line"></div>
+                <time class="time">
+                    <p><b>@eventDate.ToLocalTime().ToString("dddd")</b></p>
+                    <p>@eventDate.ToLocalTime().ToShortTimeString()</p>
+                </time>
+
+
+                <button class="schedule-btn" type="button"
+                    onclick="addToCalendar('@Event.Title', '@eventDate.ToLocalTime().ToString("yyyy-MM-ddTHH:mm:ss")', '@Event.LocationName', '@Event.Description')">
+                    <i class="calendar-icon fa-regular fa-calendar-plus fa-2xl"></i>
+                </button>
+            </div>
+            <div class="close-date">
+                Apply before @closeDate.ToLocalTime().ToString("dddd, dd MMM yy")
+                @closeDate.ToLocalTime().ToShortTimeString()
+            </div>
+
+            <div class="event-description">
+                <div>
+                    <b>About this event</b>
+                </div>
+                <p class="description">
+                    @Event.Description
+                </p>
+            </div>
+            <div class="apply-container">
+                @if (!isOwner && !isAttendee && Event.IsOpen)
+                {
+                    <div class="reputations">
+                        <b>@Event.MinReputation *RP</b> required<br>
+                        @if (@user is not null)
+                        {
+                            <div>you have <b>@String.Format(user.ReputationPoint % 1 == 0 ? "{0:0}" : "{0:0.00}",
+                                    user.ReputationPoint) *RP</b></div>
+                        }
+                    </div>
+                }
+                else if (!isOwner && isAttendee && Event.IsOpen)
+                {
+                    <div class="reputations">
+                        @Event!.Attendees.Where(a => a.User.Id == user!.Id).FirstOrDefault()!.Status*
+                    </div>
+                }
+                <div class="btn-container">
+                    @if (isClosed)
+                    {
+                        <button class="closed-btn" type="button" id="closed-btn" disabled
+                            style="cursor: default !important">
+                            Closed
+                        </button>
+                    }
+                    else
+                    {
+                        if (user is null)
+                        {
+                            <button class="btn" type="button" id="req-login-btn"
+                                onclick="location.href='@Url.Action("Login", "Account")'">
+                                <b>Required<br>Login</b>
+                            </button>
+                        }
+                        else
+                        {
+                            @if (isOwner)
+                            {
+                                <button class="btn" type="button" id="edit-btn"
+                                    onclick="location.href='@Url.Action("Edit", "Event", new{ Id = @Event.Id })'">
+                                    <b>Edit</b>
+                                </button>
+
+                                <button class="btn disapprove" type="button" id="leave-btn"
+                                    link="@Url.Action("Close", "Event", new{ Id = @Event.Id })">
+                                    <b>Close</b>
+                                </button>
+                            }
+                            else if (isAttendee)
+                            {
+                                @if (Event!.Attendees.Any(a => a.User.UserName == user.UserName && a.Status !=
+                               AttendeeStatus.Approved))
+                                {
+                                    <button class="btn" type="button" id="leave-btn"
+                                        onclick="location.href='@Url.Action("Leave", "Event", new{ Id = @Event.Id })'">
+                                        <b>Leave</b>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="btn disapprove" type="button" id="leave-btn"
+                                        link="@Url.Action("Leave", "Event", new{ Id = @Event.Id })">
+                                        <b>Leave</b>
+                                    </button>
+                                }
+                            }
+                            else
+                            {
+                                <button class="btn" type="button" id="join-btn"
+                                    onclick="location.href='@Url.Action("Join", "Event", new { Id = @Event.Id })'">
+                                    <b>Join</b>
+                                </button>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </article>
+        <article class="event-map-applicant">
+            @if (
+            @Event.LocationLat is not null &&
+            @Event.LocationLng is not null
+            )
+            {
+                <div class="event-map">
+                    <a class="map"
+                        href="https://www.google.com/maps/search/?api=1&query=@Event.LocationLat,@Event.LocationLng"
+                        target="_blank">
+                        <img class="map-img" src=@googleMap alt="go to google map">
+                        </img>
+                    </a>
+                    <div class="location">
+                        <div><i class="fa-solid fa-location-dot"></i></div>
+                        <div>@Event.LocationName</div>
+                    </div>
+                </div>
+            }
+            <div class="attendant-container">
+                <p>People who joined in!</p>
+                <div class="attendants">
+                    @foreach (var attendee in @Event!.Attendees.OrderBy(order => order.UpdatedAt).ToList())
+                    {
+                        @if (attendee.isApproved)
+                        {
+                            <div class="attendee">
+                                @if (user is not null && attendee.User.Id == user!.Id)
+                                {
+                                    <a href="@Url.Action("Profile", "User")">
+                                        <img class="attendee-avatar" src="@attendee.User.Avatar" alt="attendee-avatar"></img>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("People", "User", new { id = attendee.User.Id })">
+                                        <img class="attendee-avatar" src="@attendee.User.Avatar" alt="attendee-avatar"></img>
+                                    </a>
+                                }
+                                <div class="attendee-name">
+                                    <b>@attendee.User.UserName</b>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+
+@section Modal {
+    <dialog class="modal" id="modal">
+        <div class="modal-header">
+            <h3>Warning</h3><button class="modal-close-button" id="modal-close-button"><i
+                    class="fa-solid fa-xmark"></i></button>
+        </div>
+        <p>This action may reduce your reputation points. Do you want to continue?</p>
+        <a id="disapprove-link">
+            Confirm
+        </a>
+    </dialog>
+}

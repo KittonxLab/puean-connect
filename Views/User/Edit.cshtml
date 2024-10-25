@@ -1,0 +1,133 @@
+@using PuanConnect.Dtos.User
+@model UpdateUserDto
+
+@{
+  ViewData["Title"] = "Edit Profile";
+}
+
+@section Styles {
+  <link rel="stylesheet" href="~/css/User/Edit/edit.style.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/css/User/Edit/edit-medium.style.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/css/User/Edit/edit-small.style.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/css/topbar.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/css/modal.css" asp-append-version="true">
+}
+
+@section Scripts {
+  <script src="~/js/User/Edit/passwordValidation.js"></script>
+  <script src="~/js/auth/register/profile_image.js"></script>
+  <script src="~/js/modal.js"></script>
+}
+
+<div class="top-bar">
+  <i id="hamburger-btn" class="fa-solid fa-bars" onClick="toggleFullNav()"></i>
+  <h2>Edit Profile</h2>
+</div>
+
+<section class="container">
+  <article class="profile-edit-form-contianer">
+    <form id="edit-form" method="post" asp-action="Edit" asp-controller="User" enctype="multipart/form-data">
+      <div asp-validation-summary="ModelOnly"></div>
+      <fieldset>
+        <div class="profile-upper">
+          <div class="user-thumbnail" id="profile-image-wrapper" style="background-image: url('https://cdn.discordapp.com/attachments/1201438198425980998/1213872327872348181/Puan-connect-bg.png?ex=66004833&is=65edd333&hm=5914ed7c1bed5d19cab4eacf9c21d4b88abdcc2f1522cfdfbb3e60ebd8c8726e&');">
+          </div>
+          <span class="user-avatar">
+            <img src="@Model.Avatar" id="profile-image" alt="user-avatar"></img>
+            <div class="upload-file-btn">
+              <input type="file" asp-for="Image" id="image-upload" accept="image/*">
+              <i class="fa-regular fa-pen-to-square"></i>
+            </div>
+          </span>
+        </div>
+      </fieldset>
+
+      <div class="lower-form">
+        <fieldset class="user-fullname">
+          <div class="profile-input">
+            <label asp-for="Firstname"></label>
+            <input asp-for="Firstname">
+            <span asp-validation-for="Firstname"></span>
+          </div>
+
+          <div class="profile-input">
+            <label asp-for="Lastname"></label>
+            <input asp-for="Lastname">
+            <span asp-validation-for="Lastname"></span>
+          </div>
+        </fieldset>
+
+        <fieldset class="user-creadential" id="user-creadential">
+          <div class="profile-input">
+            <label asp-for="Username"></label>
+            <input asp-for="Username">
+            <span asp-validation-for="Username"></span>
+          </div>
+
+          <div class="profile-input">
+            <label asp-for="Email"></label>
+            <input asp-for="Email">
+            <span asp-validation-for="Email"></span>
+          </div>
+
+          <div class="profile-input" id="phone-input">
+            <label asp-for="PhoneNumber"></label>
+            <input asp-for="PhoneNumber" type="text" id="phone" pattern="^(0[689]{1})+([0-9]{8})+$"
+              title="only Thai phone number with no '-' or whitespace are allowed" required>
+            <span asp-validation-for="PhoneNumber"></span>
+          </div>
+
+          <div class="profile-input" id="birth-input">
+            <label asp-for="BirthDate"></label>
+            <input asp-for="BirthDate" type="date" id="birthdate" min="1800-01-01"
+              value="@Model.BirthDate.Value.ToLocalTime().ToString("yyyy-MM-dd")"
+              max='@DateTime.Now.ToString("yyyy-MM-dd")' required>
+            <span asp-validation-for="BirthDate"></span>
+          </div>
+        </fieldset>
+
+        <fieldset class="user-password">
+          <div class="profile-input">
+            <label asp-for="Password"></label>
+            <input type="password" asp-for="Password" id="password" placeholder="New password" autocomplete="off"
+              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%*?&])[A-Za-z\d@@$!%*?&]{8,}$">
+            <span asp-validation-for="Password"></span>
+          </div>
+
+          <div class="profile-input">
+            <label for="retype-password">Confirm Password</label>
+            <input type="password" for="retype-password" id="retype-password" autocomplete="off"
+              placeholder="Re-type new password"
+              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%*?&])[A-Za-z\d@@$!%*?&]{8,}$">
+          </div>
+        </fieldset>
+
+        <fieldset class="user-bio">
+          <div class="profile-input">
+            <label asp-for="Bio"></label>
+            <textarea asp-for="Bio" placeholder="e.g. Helloworld"></textarea>
+            <span asp-validation-for="Bio"></span>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="form-btn-container">
+        <button type="button" class="disapprove submit-btn">Save</button>
+        <button type="button" id="cancle-btn" onclick="location.href= '@Url.Action("Profile", "User")' ">Cancel</button>
+      </div>
+    </form>
+  </article>
+</section>
+
+@section Modal {
+  <dialog class="modal" id="modal">
+    <div class="modal-header">
+      <h3>Warning</h3><button class="modal-close-button" id="modal-close-button"><i
+          class="fa-solid fa-xmark"></i></button>
+    </div>
+    <p>Are you sure you want to save changes?</p>
+    <a id="disapprove-link">
+      Confirm
+    </a>
+  </dialog>
+}

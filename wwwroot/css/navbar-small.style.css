@@ -1,0 +1,48 @@
+@media (max-width: 425px) {
+    main {
+        width: 100% !important;
+    }
+
+    .side-navbar {
+        display: none;
+    }
+
+    .nav-open .full-screen-nav {
+        transform: translate(0);
+    }
+
+    .full-screen-nav #hamburger {
+        font-size: 1.5rem;
+        margin-left: 2rem;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .nav-account-action {
+        justify-content: center;
+        gap: 1rem;
+    }
+    
+    .full-screen-nav .nav-user-profile {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .full-screen-nav .nav-user-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        
+        & p {
+            margin: 0;
+        }
+    }
+    
+    .nav-user-logout {
+        display: flex;
+        order: 2;
+        align-self: center;
+    }
+}

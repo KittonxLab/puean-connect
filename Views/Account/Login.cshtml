@@ -1,0 +1,44 @@
+@using PuanConnect.Dtos.Auth
+@model LoginDto
+
+@{
+  ViewData["Title"] = "Login";
+  Layout = "_Authentication";
+}
+
+<h2>Login</h2>
+
+@if (TempData["error"] != null)
+{
+  <div class="error-text">
+    @TempData["error"]
+  </div>
+}
+
+@section Scripts {
+  <script src="~/js/auth/login/ajaxLogin.js" ></script>
+}
+
+<form class="form-container"  enctype="application/x-www-form-urlencoded">
+  <div asp-validation-summary="ModelOnly" class="error-text"></div>
+
+  <div>
+    <label asp-for="EmailOrUsername">Email or Username</label>
+    <input asp-for="EmailOrUsername" type="text" id="email-or-username" required>
+    <span asp-validation-for="EmailOrUsername" class="error-text"></span>
+  </div>
+
+  <div>
+    <label asp-for="Password">Password</label>
+    <input asp-for="Password" type="password" id="password" required>
+    <span asp-validation-for="Password" class="error-text"></span>
+  </div>
+
+  <button type="button" class="submit-button" onclick="makeRequest('POST', './login', '.form-container')">
+    Login
+  </button>
+</form>
+
+<div class="switch-form">
+  <p>New to Puanconnect? <a href="~/Account/Register">Create free account</a></p>
+</div>
